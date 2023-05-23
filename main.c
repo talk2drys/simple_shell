@@ -6,27 +6,35 @@
 #include <unistd.h>
 
 /**
- * main - Entry point of the simple_shell program
+ * main - Entry point of the simple shell program
+ * @argc: The argument count
+ * @argv: The argument vector
+ * @envp: The environment variables
  *
- * This function serves as the entry point for the simple_shell program. It
- * implements a basic command line interpreter that displays a prompt, waits
- * for the user to enter a command, and executes the command by forking a child
- * process. The function continues this loop until the user enters the
- * end-of-file condition (Ctrl+D).
+ * This function implements a basic command line interpreter, which displays a
+ * prompt, waits for the user to enter a command, and executes the command by
+ * forking a child process. The function continues this loop until the user
+ * enters the end-of-file condition (Ctrl+D). It uses the `get_command_path`
+ * function to get the full path of the command based on the directories listed
+ * in the PATH environment variable. Then, it calls the `handle_command`
+ * function to handle the command execution.
  *
  * Return: Always 0.
  */
-
-int main(int argc, char **argv, char **envp)
+int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
+				 char **envp)
 {
 	char command[MAX_COMMAND_LENGTH];
 	char prompt[] = "#cisfun$ ";
 	pid_t pid;
+	char *command_path;
+
 	while (1)
 	{
 		char *arguments[MAX_ARGUMENTS + 1];
 		char *token;
 		int arg_count = 0;
+
 		printf("%s", prompt);
 		if (fgets(command, sizeof(command), stdin) == NULL)
 		{
@@ -35,43 +43,27 @@ int main(int argc, char **argv, char **envp)
 		}
 		command[strcspn(command, "\n")] = '\0';
 		token = strtok(command, " ");
+
 		while (token != NULL && arg_count < MAX_ARGUMENTS)
 		{
 			arguments[arg_count++] = token;
 			token = strtok(NULL, " ");
 		}
 		arguments[arg_count] = NULL;
-		// Check if command exists in the PATH
-		char *command_path = get_command_path(arguments[0], envp);
-		if (command_path == NULL)
-		{
-			fprintf(stderr, "%s: command not found\n", arguments[0]);
-			continue;
-		}
-		pid = fork();
-		if (pid < 0)
-		{
-			perror("fork");
-			exit(1);
-		}
-		else if (pid == 0)
-		{
-			handle_child_process(command_path, arguments, envp);
-		}
-		else
-		{
-			handle_parent_process(pid, arguments[0]);
-		}
+
+		command_path = get_command_path(arguments[0], envp);
+		handle_command(command_path, arguments, &pid, envp);
 		free(command_path);
 	}
-	return 0;
+
+	return (0);
 }
 
 /**
  * handle_child_process - Handles the child process after forking
  * @command: The command to be executed
  * @arguments: The arguments for the command
- * #envp: pointer of char to environment variables
+ * @envp: pointer of char to environment variables
  *
  * This function is responsible for executing the specified command
  * with the given arguments in the child process using the `execve`
@@ -114,4 +106,26 @@ void handle_parent_process(pid_t pid, char *command)
 			fprintf(stderr, "%s: command not found\n", command);
 		}
 	}
+}
+
+void handle_command(char *command_path, char **arguments, pid_t *pid,
+										char **envp)
+{
+	if (command_path == NULL)
+	{
+		fprintf(stderr, "%s: command not found\n", arguments[0]);
+		return;
+	}
+
+	*pid = fork();
+
+	if (*pid < 0)
+	{
+		perror("fork");
+		exit(1);
+	}
+	else if (*pid == 0)
+		handle_child_process(command_path, arguments, envp);
+	else
+		handle_parent_process(*pid, arguments[0]);
 }

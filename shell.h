@@ -9,5 +9,7 @@
 char *get_command_path(char *command, char **envp);
 void handle_child_process(char *command, char **arguments, char **envp);
 void handle_parent_process(pid_t pid, char *command);
+void handle_command(char *command_path, char **arguments, pid_t *pid,
+										char **envp);
 
 #endif
