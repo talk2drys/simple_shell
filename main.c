@@ -5,29 +5,79 @@
 #include <unistd.h>
 
 #define MAX_COMMAND_LENGTH 100
+#define MAX_ARGUMENTS 10
+
+void handle_child_process(char *command, char **arguments);
+void handle_parent_process(pid_t pid, char *command);
+
+/**
+ * main - Entry point of the simple_shell program
+ *
+ * This function serves as the entry point for the simple_shell program. It
+ * implements a basic command line interpreter that displays a prompt, waits
+ * for the user to enter a command, and executes the command by forking a child
+ * process. The function continues this loop until the user enters the
+ * end-of-file condition (Ctrl+D).
+ *
+ * Return: Always 0.
+ */
+int main(void)
+{
+	char command[MAX_COMMAND_LENGTH];
+	char prompt[] = "#cisfun$ ";
+	pid_t pid;
+
+	while (1)
+	{
+		char *arguments[MAX_ARGUMENTS + 1];
+		char *token;
+		int arg_count = 0;
+
+		printf("%s", prompt);
+
+		if (fgets(command, sizeof(command), stdin) == NULL)
+		{
+			printf("\n");
+			break;
+		}
+
+		command[strcspn(command, "\n")] = '\0';
+
+		token = strtok(command, " ");
+		while (token != NULL && arg_count < MAX_ARGUMENTS)
+		{
+			arguments[arg_count++] = token;
+			token = strtok(NULL, " ");
+		}
+		arguments[arg_count] = NULL;
+
+		pid = fork();
+
+		if (pid < 0)
+		{
+			perror("fork");
+			exit(1);
+		}
+		else if (pid == 0)
+			handle_child_process(arguments[0], arguments);
+		else
+			handle_parent_process(pid, arguments[0]);
+	}
+	return (0);
+}
 
 /**
  * handle_child_process - Handles the child process after forking
  * @command: The command to be executed
+ * @arguments: The arguments for the command
  *
  * This function is responsible for executing the specified command
- * in the child process using the `execve` system call.
+ * with the given arguments in the child process using the `execve`
+ * system call.
  */
-void handle_child_process(char *command)
+void handle_child_process(char *command, char **arguments)
 {
-	char **args = malloc(2 * sizeof(char *));
-	int ret;
-
-	if (args == NULL)
-	{
-		perror("malloc");
-		exit(1);
-	}
-
-	args[0] = command;
-	args[1] = NULL;
-
-	ret = execve(command, args, NULL);
+	int ret = execve(command, arguments, NULL);
 
 	perror("execve");
 	exit(ret);
@@ -52,6 +102,7 @@ void handle_parent_process(pid_t pid, char *command)
 		perror("waitpid");
 		exit(1);
 	}
+
 	if (WIFEXITED(status))
 	{
 		int exit_status = WEXITSTATUS(status);
@@ -63,51 +114,3 @@ void handle_parent_process(pid_t pid, char *command)
 	}
 }
 
-/**
- * main - Entry point of the simple_shell program
- *
- * This function serves as the entry point for the simple_shell program. It
- * implements a basic command line interpreter that displays a prompt, waits
- * for the user to enter a command, and executes the command by forking a child
- * process. The function continues this loop until the user enters the
- * end-of-file condition (Ctrl+D).
- *
- * Return: Always 0.
- */
-int main(void)
-{
-	char command[MAX_COMMAND_LENGTH];
-	char prompt[] = "#cisfun$ ";
-	pid_t pid;
-
-	while (1)
-	{
-		printf("%s", prompt);
-
-		if (fgets(command, sizeof(command), stdin) == NULL)
-		{
-			printf("\n");
-			break;
-		}
-
-		command[strcspn(command, "\n")] = '\0';
-
-		pid = fork();
-
-		if (pid < 0)
-		{
-			perror("fork");
-			exit(1);
-		}
-		else if (pid == 0)
-		{
-			handle_child_process(command);
-		}
-		else
-		{
-			handle_parent_process(pid, command);
-		}
-	}
-
-	return (0);
-}
