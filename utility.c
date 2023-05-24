@@ -51,3 +51,25 @@ char *get_command_path(char *command, __attribute__((unused)) char **envp)
 	free(command_path);
 	return (NULL);
 }
+
+/**
+ * print_environment - Prints the environment variables.
+ *
+ * This function takes an array of strings `envp` that represents the
+ * environment variables and prints them to the standard output, each on a
+ * separate line.
+ *
+ * @envp: An array of strings representing the environment variables.
+ *             The last element of the array must be a null pointer indicating
+ *             the end of the list.
+ */
+void print_environment(char **envp)
+{
+	char **env = envp;
+
+	while (*env != NULL)
+	{
+		printf("%s\n", *env);
+		env++;
+	}
+}
