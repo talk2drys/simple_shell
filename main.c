@@ -108,6 +108,14 @@ void handle_parent_process(pid_t pid, char *command)
 	}
 }
 
+/**
+ * handle_command - Handles the execution of a command in the shell
+ *
+ * @command_path: The path to the command
+ * @arguments: The arguments for the command
+ * @pid: Pointer to the process ID of the child process
+ * @envp: The environment variables
+ */
 void handle_command(char *command_path, char **arguments, pid_t *pid,
 										char **envp)
 {
