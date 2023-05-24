@@ -54,7 +54,6 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
 			token = strtok(NULL, " ");
 		}
 		arguments[arg_count] = NULL;
-
 		command_path = get_command_path(arguments[0], envp);
 		handle_command(command_path, arguments, &pid, envp);
 		free(command_path);

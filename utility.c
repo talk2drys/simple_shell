@@ -15,9 +15,96 @@
  *
  * Return: The full path of the command if found, NULL otherwise.
  */
-char *get_command_path(char *command, __attribute__((unused)) char **envp)
+char *get_command_path(char *command, char **envp)
 {
-	char *path_env = getenv("PATH");
+	char *path_env = NULL;
+	char *command_path;
+	int i;
+
+	command_path = get_absolute_command_path(command);
+	if (command_path != NULL)
+	{
+		return (command_path);
+	}
+
+	for (i = 0; envp[i] != NULL; i++)
+	{
+		if (strncmp(envp[i], "PATH=", 5) == 0)
+		{
+			path_env = envp[i] + 5;
+			break;
+		}
+	}
+	return (search_command_in_path(command, path_env));
+}
+
+/**
+ * print_environment - Prints the environment variables.
+ *
+ * This function takes an array of strings `envp` that represents the
+ * environment variables and prints them to the standard output, each on a
+ * separate line.
+ *
+ * @envp: An array of strings representing the environment variables.
+ *             The last element of the array must be a null pointer indicating
+ *             the end of the list.
+ */
+void print_environment(char **envp)
+{
+	char **env = envp;
+
+	while (*env != NULL)
+	{
+		printf("%s\n", *env);
+		env++;
+	}
+}
+
+/**
+ * get_absolute_command_path - Get the absolute path to a command if it is
+ * already an absolute path.
+ *
+ * @command: The name or path of the command to check.
+ * Return:  the absolute path to the command if it exists and is executable,
+ *          or NULL if the command is not an absolute path or is not valid.
+ */
+char *get_absolute_command_path(char *command)
+{
+	if (command[0] == '/')
+	{
+		/* Command is already an absolute path, no need to search in PATH */
+		if (access(command, X_OK) == 0)
+		{
+			/* Command exists and is executable */
+			char *command_path = malloc((strlen(command) + 1) * sizeof(char));
+
+			if (command_path == NULL)
+			{
+				perror("malloc");
+				exit(1);
+			}
+			strcpy(command_path, command);
+			return (command_path);
+		}
+		else
+		{
+			return (NULL); /* Command does not exist or is not executable */
+		}
+	}
+
+	return (NULL);
+}
+
+/**
+ * search_command_in_path - Search for a command in the specified PATH
+ * environment variable.
+ *
+ * @command:   The name of the command to search for.
+ * @path_env:  The value of the PATH environment variable.
+ * Return:     The full path to the command if found, or NULL otherwise.
+ */
+char *search_command_in_path(char *command, char *path_env)
+{
 	char *token;
 	char *path;
 	char *command_path = malloc(MAX_COMMAND_LENGTH * sizeof(char));
@@ -50,26 +137,4 @@ char *get_command_path(char *command, __attribute__((unused)) char **envp)
 
 	free(command_path);
 	return (NULL);
-}
-
-/**
- * print_environment - Prints the environment variables.
- *
- * This function takes an array of strings `envp` that represents the
- * environment variables and prints them to the standard output, each on a
- * separate line.
- *
- * @envp: An array of strings representing the environment variables.
- *             The last element of the array must be a null pointer indicating
- *             the end of the list.
- */
-void print_environment(char **envp)
-{
-	char **env = envp;
-
-	while (*env != NULL)
-	{
-		printf("%s\n", *env);
-		env++;
-	}
 }
