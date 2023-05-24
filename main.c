@@ -39,9 +39,13 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
 		if (fgets(command, sizeof(command), stdin) == NULL)
 		{
 			printf("\n");
-			break;
+			continue;
 		}
-		command[strcspn(command, "\n")] = '\0';
+
+		if (command[0] == '\n')
+			continue;
+		else
+			command[strcspn(command, "\n")] = '\0';
 		token = strtok(command, " ");
 
 		while (token != NULL && arg_count < MAX_ARGUMENTS)
