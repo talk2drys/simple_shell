@@ -7,6 +7,8 @@
 
 /**
  * handle_parent_process - Handles the parent process after forking
+ *
+ * @ctx: runtime context
  * @pid: The process ID of the child process
  * @command: The command that was executed
  *
@@ -39,10 +41,9 @@ void handle_parent_process(struct Context *ctx, pid_t pid, char *command)
 /**
  * handle_command - Handles the execution of a command in the shell
  *
+ * @ctx: runtime context
  * @command_path: The path to the command
- * @arguments: The arguments for the command
  * @pid: Pointer to the process ID of the child process
- * @envp: The environment variables
  */
 void handle_command(struct Context *ctx, char *command_path, pid_t *pid)
 {
@@ -67,9 +68,9 @@ void handle_command(struct Context *ctx, char *command_path, pid_t *pid)
 
 /**
  * handle_child_process - Handles the child process after forking
+ *
+ * @ctx: runtime context
  * @command: The command to be executed
- * @arguments: The arguments for the command
- * @envp: pointer of char to environment variables
  *
  * This function is responsible for executing the specified command
  * with the given arguments in the child process using the `execve`

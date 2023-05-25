@@ -68,9 +68,8 @@ void handleInput(char *input, __attribute__((unused)) int size,
  * processCommand - Process the command by determining if it is a built-in
  * command or an external command and handle it accordingly.
  *
+ * @ctx: runtime context
  * @command: The command to be processed.
- * @arguments: An array of arguments for the command.
- * @envp: The environment variables.
  */
 void processCommand(struct Context *ctx, char *command)
 {

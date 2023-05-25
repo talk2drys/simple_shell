@@ -28,9 +28,8 @@ int is_string_in_array(const char *target, const char **array, int size)
 /**
  * handle_built_in_command - Handle built-in commands.
  *
+ * @ctx: runtime context
  * @command: The command to handle.
- * @arguments: argument list
- * @envp: environmental variable
  *
  * This function handles built-in commands specific to the shell. Currently,
  * it only supports the "exit" command, which terminates the shell process.
