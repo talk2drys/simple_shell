@@ -29,15 +29,43 @@ int is_string_in_array(const char *target, const char **array, int size)
  * handle_built_in_command - Handle built-in commands.
  *
  * @command: The command to handle.
+ * @arguments: argument list
  * @envp: environmental variable
  *
  * This function handles built-in commands specific to the shell. Currently,
  * it only supports the "exit" command, which terminates the shell process.
  */
-void handle_built_in_command(char *command, char **envp)
+void handle_built_in_command(char *command, char **arguments, char **envp)
 {
 	if (strcmp(command, "exit") == 0)
-		exit(EXIT_SUCCESS);
+	{
+		int length = get_array_length(arguments);
+
+		if (length == 2)
+			exit(atoi(arguments[1]));
+		else
+			exit(EXIT_SUCCESS);
+	}
 	if (strcmp(command, "env") == 0)
 		print_environment(envp);
+}
+
+/**
+ * get_array_length - get length of array.
+ *
+ * @array: array to calculate it length
+ *
+ * Return: length of array
+ */
+
+int get_array_length(char **array)
+{
+	int length = 0;
+
+	while (array[length] != NULL)
+	{
+		length++;
+	}
+
+	return (length);
 }

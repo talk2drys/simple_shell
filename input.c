@@ -81,7 +81,7 @@ void processCommand(char *command, char **arguments, char **envp)
 
 	if (is_string_in_array(command, array, size))
 	{
-		handle_built_in_command(command, envp);
+		handle_built_in_command(command, arguments, envp);
 	}
 	else
 	{
