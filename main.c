@@ -5,10 +5,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-const char *array[] = {"exit"};
-const int size = sizeof(array) / sizeof(array[0]);
-
-
 /**
  * main - Entry point of the simple shell program
  * @argc: The argument count
@@ -30,42 +26,30 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
 {
 	char command[MAX_COMMAND_LENGTH];
 	char prompt[] = "#cisfun$ ";
-	pid_t pid;
-	char *command_path;
+	ssize_t bytesRead;
 
 	while (1)
 	{
 		char *arguments[MAX_ARGUMENTS + 1];
-		char *token;
-		int arg_count = 0;
 
-		printf("%s", prompt);
-		if (fgets(command, sizeof(command), stdin) == NULL)
+		if (isInputTerminal())
+			printPrompt(prompt);
+
+		bytesRead = readCommand(command);
+		if (bytesRead == -1)
 		{
-			printf("\n");
-			continue;
+			perror("read");
+			exit(EXIT_FAILURE);
 		}
-
-		if (command[0] == '\n')
-			continue;
-		else
-			command[strcspn(command, "\n")] = '\0';
-		token = strtok(command, " ");
-
-		while (token != NULL && arg_count < MAX_ARGUMENTS)
+		else if (bytesRead == 0)
 		{
-			arguments[arg_count++] = token;
-			token = strtok(NULL, " ");
+			exit(EXIT_SUCCESS);
 		}
-		arguments[arg_count] = NULL;
-		if (is_string_in_array(command, array, size)) {
-			handle_built_in_command(command);
-		} else {
-			command_path = get_command_path(arguments[0], envp);
-			handle_command(command_path, arguments, &pid, envp);
-		}
-		free(command_path);
+
+		handleInput(command, bytesRead, arguments);
+		processCommand(arguments[0], envp, arguments);
 	}
+
 	return (0);
 }
 
