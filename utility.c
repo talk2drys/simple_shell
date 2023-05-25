@@ -5,7 +5,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-
 /**
  * get_command_path - Get the full path of a command
  * @command: The command to find the path for
@@ -26,7 +25,7 @@ char *get_command_path(char *command, char **envp)
 	command_path = get_absolute_command_path(command);
 	if (command_path != NULL)
 	{
-		return command_path;
+		return (command_path);
 	}
 
 	for (i = 0; envp[i] != NULL; i++)
@@ -34,7 +33,8 @@ char *get_command_path(char *command, char **envp)
 		if (strncmp(envp[i], "PATH=", 5) == 0)
 		{
 			path_env = malloc(strlen(envp[i] + 5) + 1);
-			if (path_env == NULL) {
+			if (path_env == NULL)
+			{
 				perror("malloc");
 				exit(EXIT_FAILURE);
 			}
@@ -45,7 +45,7 @@ char *get_command_path(char *command, char **envp)
 
 	h = search_command_in_path(command, path_env);
 	free(path_env);
-	return h;
+	return (h);
 }
 
 /**

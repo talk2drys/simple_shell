@@ -33,7 +33,7 @@ void printPrompt(const char *prompt)
 ssize_t readCommand(char *command, size_t size)
 {
 	memset(command, 0, size - 1);
-	return read(STDIN_FILENO, command, size - 1);
+	return (read(STDIN_FILENO, command, size - 1));
 }
 
 /**
@@ -43,7 +43,8 @@ ssize_t readCommand(char *command, size_t size)
  * @size: The size of the input buffer.
  * @arguments: An array to store the tokenized arguments.
  */
-void handleInput(char *input, __attribute__((unused)) int size, char **arguments)
+void handleInput(char *input, __attribute__((unused)) int size,
+								 char **arguments)
 {
 	char *token;
 	int arg_count = 0;
@@ -80,7 +81,7 @@ void processCommand(char *command, char **arguments, char **envp)
 
 	if (is_string_in_array(command, array, size))
 	{
-		handle_built_in_command(command);
+		handle_built_in_command(command, envp);
 	}
 	else
 	{
