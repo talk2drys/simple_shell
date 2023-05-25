@@ -45,9 +45,11 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
 		{
 			exit(EXIT_SUCCESS);
 		}
+		else if (command[0] == '\n')
+			continue;
 
 		handleInput(command, bytesRead, arguments);
-		processCommand(arguments[0], envp, arguments);
+		processCommand(arguments[0], arguments, envp);
 	}
 
 	return (0);

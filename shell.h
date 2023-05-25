@@ -18,7 +18,7 @@ char *get_absolute_command_path(char *command);
 char *search_command_in_path(char *command, char *path_env);
 int is_string_in_array(const char *target, const char **array, int size);
 void handle_built_in_command(char *command);
-int isInputTerminal();
+int isInputTerminal(void);
 void handleInput(char *input, int size, char **arguments);
 void processCommand(char *command, char **arguments, char **envp);
 void printPrompt(const char *prompt);
