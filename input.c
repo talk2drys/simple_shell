@@ -72,7 +72,7 @@ void handleInput(char *input, __attribute__((unused)) int size,
  * @arguments: An array of arguments for the command.
  * @envp: The environment variables.
  */
-void processCommand(char *command, char **arguments, char **envp)
+void processCommand(struct Context *ctx, char *command)
 {
 	char *command_path;
 	pid_t pid;
@@ -81,12 +81,12 @@ void processCommand(char *command, char **arguments, char **envp)
 
 	if (is_string_in_array(command, array, size))
 	{
-		handle_built_in_command(command, arguments, envp);
+		handle_built_in_command(ctx, command);
 	}
 	else
 	{
-		command_path = get_command_path(command, envp);
-		handle_command(command_path, arguments, &pid, envp);
+		command_path = get_command_path(command, ctx->envp);
+		handle_command(ctx, command_path, &pid);
 		free(command_path);
 	}
 }

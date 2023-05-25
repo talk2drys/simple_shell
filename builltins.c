@@ -35,19 +35,19 @@ int is_string_in_array(const char *target, const char **array, int size)
  * This function handles built-in commands specific to the shell. Currently,
  * it only supports the "exit" command, which terminates the shell process.
  */
-void handle_built_in_command(char *command, char **arguments, char **envp)
+void handle_built_in_command(struct Context *ctx, char *command)
 {
 	if (strcmp(command, "exit") == 0)
 	{
-		int length = get_array_length(arguments);
+		int length = get_array_length(ctx->arguments);
 
 		if (length == 2)
-			exit(atoi(arguments[1]));
+			exit(atoi(ctx->arguments[1]));
 		else
 			exit(EXIT_SUCCESS);
 	}
 	if (strcmp(command, "env") == 0)
-		print_environment(envp);
+		print_environment(ctx->envp);
 }
 
 /**
