@@ -35,7 +35,7 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
 		if (isInputTerminal())
 			printPrompt(prompt);
 
-		bytesRead = readCommand(command);
+		bytesRead = readCommand(command, MAX_COMMAND_LENGTH);
 		if (bytesRead == -1)
 		{
 			perror("read");

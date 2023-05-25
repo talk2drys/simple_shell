@@ -26,13 +26,14 @@ void printPrompt(const char *prompt)
  * readCommand - Read input from the standard input into the specified buffer.
  *
  * @command: Buffer to store the read input.
+ * @size: size of buffer
  *
  * Return: The number of bytes read, or -1 if an error occurred.
  */
-ssize_t readCommand(char *command)
+ssize_t readCommand(char *command, size_t size)
 {
-	memset(command, 0, sizeof(command) - 1);
-	return (read(STDIN_FILENO, command, sizeof(command) - 1));
+	memset(command, 0, size - 1);
+	return read(STDIN_FILENO, command, size - 1);
 }
 
 /**

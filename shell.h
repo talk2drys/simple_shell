@@ -22,5 +22,5 @@ int isInputTerminal(void);
 void handleInput(char *input, int size, char **arguments);
 void processCommand(char *command, char **arguments, char **envp);
 void printPrompt(const char *prompt);
-ssize_t readCommand(char *command);
+ssize_t readCommand(char *command, size_t size);
 #endif
