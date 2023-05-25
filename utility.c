@@ -1,4 +1,5 @@
 #include "shell.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -147,4 +148,26 @@ char *search_command_in_path(char *command, char *path_env)
 
 	free(command_path);
 	return (NULL);
+}
+
+void stripSurroundingSpaces(char *str)
+{
+	size_t length = strlen(str);
+	size_t start = 0, end = length - 1;
+	size_t i;
+
+	while (start < length && isspace(str[start]))
+	{
+		start++;
+	}
+	while (end > start && isspace(str[end]))
+	{
+		end--;
+	}
+
+	for (i = 0; i <= end - start; i++)
+	{
+		str[i] = str[start + i];
+	}
+	str[i] = '\0';
 }

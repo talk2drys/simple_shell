@@ -53,7 +53,7 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
 			continue;
 
 		handleInput(command, bytesRead, arguments);
-		processCommand(&context, command);
+		processCommand(&context, arguments[0]);
 	}
 
 	return (0);

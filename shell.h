@@ -29,4 +29,5 @@ void handle_parent_process(struct Context *ctx, pid_t pid, char *command);
 void handle_built_in_command(struct Context *ctx, char *command);
 void processCommand(struct Context *ctx, char *command);
 
+void stripSurroundingSpaces(char *str);
 #endif

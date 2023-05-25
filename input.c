@@ -58,6 +58,7 @@ void handleInput(char *input, __attribute__((unused)) int size,
 
 	while (token != NULL && arg_count < MAX_ARGUMENTS)
 	{
+		stripSurroundingSpaces(token);
 		arguments[arg_count++] = token;
 		token = strtok(NULL, " ");
 	}
