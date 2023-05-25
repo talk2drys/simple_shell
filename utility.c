@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+
 /**
  * get_command_path - Get the full path of a command
  * @command: The command to find the path for

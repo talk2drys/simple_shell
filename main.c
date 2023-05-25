@@ -5,6 +5,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+const char *array[] = {"exit"};
+const int size = sizeof(array) / sizeof(array[0]);
+
+
 /**
  * main - Entry point of the simple shell program
  * @argc: The argument count
@@ -54,11 +58,14 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv,
 			token = strtok(NULL, " ");
 		}
 		arguments[arg_count] = NULL;
-		command_path = get_command_path(arguments[0], envp);
-		handle_command(command_path, arguments, &pid, envp);
+		if (is_string_in_array(command, array, size)) {
+			handle_built_in_command(command);
+		} else {
+			command_path = get_command_path(arguments[0], envp);
+			handle_command(command_path, arguments, &pid, envp);
+		}
 		free(command_path);
 	}
-
 	return (0);
 }
 
