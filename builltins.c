@@ -29,14 +29,15 @@ int is_string_in_array(const char *target, const char **array, int size)
  * handle_built_in_command - Handle built-in commands.
  *
  * @command: The command to handle.
+ * @envp: environmental variable
  *
  * This function handles built-in commands specific to the shell. Currently,
  * it only supports the "exit" command, which terminates the shell process.
  */
-void handle_built_in_command(char *command)
+void handle_built_in_command(char *command, char **envp)
 {
 	if (strcmp(command, "exit") == 0)
-	{
 		exit(EXIT_SUCCESS);
-	}
+	if (strcmp(command, "env") == 0)
+		print_environment(envp);
 }
